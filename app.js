@@ -120,6 +120,17 @@ function showTab(name) {
   // Refresh tab-specific renders
   const renders = { dashboard: refreshDashboard, districts: renderDistrictTable, farmers: renderFarmerTable, register: populateDistrictDropdowns, certificates: renderCertTable, transfers: renderTransferTable, reports: renderReports, settings: renderSettings };
   if (renders[name]) renders[name]();
+
+  // Sync mobile bottom nav active state
+  const mobileTabs = ['dashboard','districts','register','farmers'];
+  document.querySelectorAll('.mob-nav-item').forEach(b => b.classList.remove('active'));
+  if (mobileTabs.includes(name)) {
+    const activeBtn = document.querySelector(`.mob-nav-item[data-tab="${name}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+  } else {
+    const moreBtn = document.querySelector('.mob-nav-item[data-tab="more-menu"]');
+    if (moreBtn) moreBtn.classList.add('active');
+  }
 }
 
 /* ══════════════════════════════════
@@ -1032,19 +1043,7 @@ document.querySelectorAll('.drawer-item').forEach(btn => {
   });
 });
 
-// Sync sidebar tab click to mobile nav
-const _origShowTab = showTab;
-function showTab(name) {
-  _origShowTab(name);
-  // Keep mobile nav in sync
-  const mobileTabs = ['dashboard','districts','register','farmers'];
-  document.querySelectorAll('.mob-nav-item').forEach(b => {
-    if (mobileTabs.includes(name) && b.dataset.tab === name) {
-      document.querySelectorAll('.mob-nav-item').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-    }
-  });
-}
+// (mobile nav sync is handled inside showTab directly — see core showTab)
 
 /* ══════════════════════════════════
    CAMERA / DOCUMENT UPLOAD (MOBILE)
