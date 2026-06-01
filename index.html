@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ti" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#22d3a5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CadaSys" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Digital Cadastral Land Registration — ዲጂታል ካዳስተር ስርዓት" />
+  <title>CadaSys — Land Registry</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- PWA Install Banner -->
+<div class="install-banner" id="installBanner">
+  <div class="install-icon">⬡</div>
+  <div class="install-text">
+    <strong>CadaSys</strong>
+    <span>ኣብ Home Screen ስቐሎ — Offline ይሰርሕ</span>
+  </div>
+  <button class="install-btn" id="installBtn">ስቐሎ</button>
+  <button class="install-dismiss" id="installDismiss">✕</button>
+</div>
+
+<!-- Mobile Bottom Nav -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mob-nav-item active" data-tab="dashboard">
+    <span class="mob-nav-icon">⊞</span>
+    <span class="mob-nav-label">ዳሽቦርድ</span>
+  </button>
+  <button class="mob-nav-item" data-tab="districts">
+    <span class="mob-nav-icon">◈</span>
+    <span class="mob-nav-label">ወረዳ</span>
+  </button>
+  <button class="mob-nav-item register-fab" data-tab="register">
+    <span class="mob-nav-icon">✦</span>
+    <span class="mob-nav-label">ምምዝጋብ</span>
+  </button>
+  <button class="mob-nav-item" data-tab="farmers">
+    <span class="mob-nav-icon">◉</span>
+    <span class="mob-nav-label">ሓረስቶት</span>
+  </button>
+  <button class="mob-nav-item" data-tab="more-menu">
+    <span class="mob-nav-icon">≡</span>
+    <span class="mob-nav-label">ዝያዳ</span>
+  </button>
+</nav>
+
+<!-- Mobile More Menu Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="more-drawer" id="moreDrawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">ዝያዳ</div>
+  <button class="drawer-item" data-tab="certificates">
+    <span>◈</span> Certificates
+  </button>
+  <button class="drawer-item" data-tab="transfers">
+    <span>⇄</span> Transfers
+  </button>
+  <button class="drawer-item" data-tab="reports">
+    <span>≡</span> Reports
+  </button>
+  <button class="drawer-item" data-tab="settings">
+    <span>⚙</span> Settings
+  </button>
+</div>
+
+<!-- SIDEBAR NAV (Desktop) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-mark">⬡</div>
+    <div class="logo-text">
+      <span class="logo-title">CadaSys</span>
+      <span class="logo-sub">Land Registry Platform</span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">◀</button>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">⊞</span><span class="nav-label">Dashboard</span></button>
+    <button class="nav-item" data-tab="districts"><span class="nav-icon">◈</span><span class="nav-label">Districts</span></button>
+    <button class="nav-item" data-tab="farmers"><span class="nav-icon">◉</span><span class="nav-label">Farmers</span></button>
+    <button class="nav-item" data-tab="register"><span class="nav-icon">✦</span><span class="nav-label">Register Land</span></button>
+    <button class="nav-item" data-tab="certificates"><span class="nav-icon">◈</span><span class="nav-label">Certificates</span></button>
+    <button class="nav-item" data-tab="transfers"><span class="nav-icon">⇄</span><span class="nav-label">Transfers</span></button>
+    <button class="nav-item" data-tab="reports"><span class="nav-icon">≡</span><span class="nav-label">Reports</span></button>
+    <button class="nav-item" data-tab="settings"><span class="nav-icon">⚙</span><span class="nav-label">Settings</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sync-badge" id="syncBadge">
+      <span class="sync-dot online"></span>
+      <span class="sync-label">Synced</span>
+    </div>
+    <div class="version-badge">v2.2.0</div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mob-menu-btn" id="mobMenuBtn">⬡</button>
+      <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-icon" id="offlineToggle" title="Toggle offline mode">
+        <span id="connIcon">⚡</span>
+      </button>
+      <div class="user-chip">
+        <span class="user-avatar">AD</span>
+        <span class="user-name desktop-only">Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <section class="tab-section active" id="tab-dashboard">
+    <div class="page-header">
+      <h1 class="page-title">Overview</h1>
+      <div class="page-meta">Region: <strong id="dashRegionName">—</strong></div>
+    </div>
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card"><div class="kpi-icon">◈</div><div class="kpi-body"><div class="kpi-label">Districts</div><div class="kpi-value" id="kpiDistricts">0</div><div class="kpi-sub" id="kpiDistrictSub">0 active</div></div></div>
+      <div class="kpi-card"><div class="kpi-icon">◉</div><div class="kpi-body"><div class="kpi-label">Farmers</div><div class="kpi-value" id="kpiFarmers">0</div><div class="kpi-sub" id="kpiFarmerSub">0 this month</div></div></div>
+      <div class="kpi-card"><div class="kpi-icon">⬡</div><div class="kpi-body"><div class="kpi-label">Land (ha)</div><div class="kpi-value" id="kpiHectares">0</div><div class="kpi-sub" id="kpiHaSub">of 0 target</div></div></div>
+      <div class="kpi-card"><div class="kpi-icon">✦</div><div class="kpi-body"><div class="kpi-label">Certificates</div><div class="kpi-value" id="kpiCerts">0</div><div class="kpi-sub" id="kpiCertSub">0% rate</div></div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Registration Progress</span><span class="card-badge" id="overallPct">0%</span></div>
+        <div class="progress-master"><div class="progress-track"><div class="progress-fill green" id="progFill" style="width:0%"></div></div></div>
+        <div class="progress-legend">
+          <div class="legend-row"><span class="dot green"></span><span>Registered</span><span id="progLegReg">0</span></div>
+          <div class="legend-row"><span class="dot amber"></span><span>Pending</span><span id="progLegPend">0</span></div>
+          <div class="legend-row"><span class="dot red"></span><span>Incomplete</span><span id="progLegInc">0</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Recent Activity</span></div>
+        <div class="activity-list" id="activityList"><div class="activity-empty">No activity yet.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">District Performance</span><button class="btn-sm" onclick="showTab('districts')">Manage →</button></div>
+      <div class="district-perf-list" id="districtPerfList"><div class="empty-state">No districts yet.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══ DISTRICTS ═══ -->
+  <section class="tab-section" id="tab-districts">
+    <div class="page-header">
+      <h1 class="page-title">Districts</h1>
+      <button class="btn-primary" onclick="openModal('addDistrictModal')">+ Add</button>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <input type="text" class="search-input" id="districtSearch" placeholder="Search districts..." oninput="renderDistrictTable()" />
+        <select id="districtStatusFilter" onchange="renderDistrictTable()"><option value="">All</option><option value="active">Active</option><option value="completed">Completed</option><option value="pending">Pending</option></select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="districtTable">
+          <thead><tr><th>District</th><th>Zone</th><th>Target</th><th>Registered</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="districtTableBody"><tr><td colspan="7" class="empty-cell">No districts added yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FARMERS ═══ -->
+  <section class="tab-section" id="tab-farmers">
+    <div class="page-header">
+      <h1 class="page-title">Farmer Registry</h1>
+      <button class="btn-primary" onclick="showTab('register')">+ Register</button>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <input type="text" class="search-input" id="farmerSearch" placeholder="Search farmers..." oninput="renderFarmerTable()" />
+        <div class="filter-row">
+          <select id="farmerDistrictFilter" onchange="renderFarmerTable()"><option value="">All Districts</option></select>
+          <select id="farmerStatusFilter" onchange="renderFarmerTable()"><option value="">All Status</option><option value="registered">Registered</option><option value="pending">Pending</option><option value="incomplete">Incomplete</option></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Name</th><th>District</th><th>Village</th><th>ha</th><th>Cert</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="farmerTableBody"><tr><td colspan="8" class="empty-cell">No farmers registered yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REGISTER LAND ═══ -->
+  <section class="tab-section" id="tab-register">
+    <div class="page-header">
+      <h1 class="page-title">Register Land</h1>
+      <div class="offline-notice" id="offlineNotice" style="display:none;">⚡ Offline — saves locally</div>
+    </div>
+    <div class="form-grid">
+
+      <div class="card form-card">
+        <div class="card-head"><span class="card-title">Farmer Information</span></div>
+        <div class="form-body">
+          <div class="form-row two">
+            <div class="field"><label>First Name *</label><input type="text" id="f_firstName" placeholder="First name" autocomplete="given-name" /></div>
+            <div class="field"><label>Father's Name *</label><input type="text" id="f_fatherName" placeholder="Father's name" /></div>
+          </div>
+          <div class="form-row two">
+            <div class="field"><label>Grandfather's Name</label><input type="text" id="f_grandfatherName" placeholder="Optional" /></div>
+            <div class="field"><label>National ID</label><input type="text" id="f_nationalId" placeholder="e.g. ETH-1234567" /></div>
+          </div>
+          <div class="form-row two">
+            <div class="field"><label>Gender *</label><select id="f_gender"><option value="">Select...</option><option value="male">Male / ተባዕታይ</option><option value="female">Female / ኣንስታይ</option></select></div>
+            <div class="field"><label>Phone</label><input type="tel" id="f_phone" placeholder="+251..." autocomplete="tel" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card form-card">
+        <div class="card-head"><span class="card-title">Location</span></div>
+        <div class="form-body">
+          <div class="form-row two">
+            <div class="field"><label>District *</label><select id="f_district" onchange="updateVillageOptions()"><option value="">Select district...</option></select></div>
+            <div class="field"><label>Village / Kebele *</label><input type="text" id="f_village" placeholder="Village name" /></div>
+          </div>
+          <div class="form-row two">
+            <div class="field"><label>GPS Latitude</label><input type="number" id="f_lat" placeholder="14.1209" step="0.0001" inputmode="decimal" /></div>
+            <div class="field"><label>GPS Longitude</label><input type="number" id="f_lng" placeholder="38.7197" step="0.0001" inputmode="decimal" /></div>
+          </div>
+          <button class="btn-outline gps-btn" onclick="captureGPS()">⌖ Capture GPS</button>
+          <div class="gps-status" id="gpsStatus"></div>
+        </div>
+      </div>
+
+      <div class="card form-card">
+        <div class="card-head"><span class="card-title">Land Parcel</span></div>
+        <div class="form-body">
+          <div class="form-row two">
+            <div class="field"><label>Area (hectares) *</label><input type="number" id="f_hectares" placeholder="1.25" step="0.01" min="0" inputmode="decimal" /></div>
+            <div class="field"><label>Land Use</label><select id="f_landUse"><option value="crop">Cropland / ሕርሻ</option><option value="grazing">Grazing / ሓሲምና</option><option value="orchard">Orchard / ኣትክልቲ</option><option value="fallow">Fallow / ዕሩቕ</option><option value="other">Other</option></select></div>
+          </div>
+          <div class="form-row two">
+            <div class="field"><label>Parcel ID</label><input type="text" id="f_parcelId" placeholder="Auto if empty" /></div>
+            <div class="field"><label>Acquisition</label><select id="f_acquisition"><option value="original">Original Allocation</option><option value="inheritance">Inheritance / ውርሻ</option><option value="redistribution">Redistribution</option><option value="gift">Gift / ስጦታ</option></select></div>
+          </div>
+          <div class="field"><label>Boundaries</label><textarea id="f_boundaries" rows="2" placeholder="N: neighbor, S: road, E: river, W: neighbor"></textarea></div>
+        </div>
+      </div>
+
+      <div class="card form-card">
+        <div class="card-head"><span class="card-title">Co-owner (Optional)</span></div>
+        <div class="form-body">
+          <div class="form-row two">
+            <div class="field"><label>Spouse Name</label><input type="text" id="f_spouse" placeholder="Full name" /></div>
+            <div class="field"><label>Spouse ID</label><input type="text" id="f_spouseId" placeholder="Optional" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camera / Documents -->
+      <div class="card form-card full-width">
+        <div class="card-head"><span class="card-title">Documents & Photos</span></div>
+        <div class="form-body">
+          <div class="form-row three">
+            <div class="doc-upload-zone" onclick="openCamera('id')">
+              <div class="upload-icon">⊡</div>
+              <div class="upload-label">National ID</div>
+              <div class="upload-sub" id="doc-id-label">Tap to scan / upload</div>
+              <input type="file" id="doc-id" accept="image/*" capture="environment" style="display:none" onchange="handleDocUpload('id', this)" />
+            </div>
+            <div class="doc-upload-zone" onclick="openCamera('photo')">
+              <div class="upload-icon">◉</div>
+              <div class="upload-label">Farmer Photo</div>
+              <div class="upload-sub" id="doc-photo-label">Tap to take photo</div>
+              <input type="file" id="doc-photo" accept="image/*" capture="user" style="display:none" onchange="handleDocUpload('photo', this)" />
+            </div>
+            <div class="doc-upload-zone" onclick="openCamera('cert')">
+              <div class="upload-icon">✦</div>
+              <div class="upload-label">Old Certificate</div>
+              <div class="upload-sub" id="doc-cert-label">Tap to scan (if any)</div>
+              <input type="file" id="doc-cert" accept="image/*" capture="environment" style="display:none" onchange="handleDocUpload('cert', this)" />
+            </div>
+          </div>
+          <!-- Photo preview strip -->
+          <div class="photo-preview-strip" id="photoPreviewStrip"></div>
+        </div>
+      </div>
+
+      <div class="form-actions full-width">
+        <button class="btn-outline" onclick="resetForm()">Clear</button>
+        <button class="btn-secondary" onclick="saveDraft()">⊡ Draft</button>
+        <button class="btn-primary" onclick="submitRegistration()">✦ Submit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CERTIFICATES ═══ -->
+  <section class="tab-section" id="tab-certificates">
+    <div class="page-header"><h1 class="page-title">Certificates</h1></div>
+    <div class="card">
+      <div class="card-head"><input type="text" class="search-input" id="certSearch" placeholder="Search certificates..." oninput="renderCertTable()" /></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Cert No.</th><th>Farmer</th><th>District</th><th>ha</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="certTableBody"><tr><td colspan="7" class="empty-cell">No certificates issued.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRANSFERS ═══ -->
+  <section class="tab-section" id="tab-transfers">
+    <div class="page-header"><h1 class="page-title">Transfers</h1><button class="btn-primary" onclick="openModal('addTransferModal')">+ Record</button></div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Certificate</th><th>From</th><th>To</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="transferTableBody"><tr><td colspan="7" class="empty-cell">No transfers.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REPORTS ═══ -->
+  <section class="tab-section" id="tab-reports">
+    <div class="page-header"><h1 class="page-title">Reports</h1></div>
+    <div class="report-grid">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Summary</span></div>
+        <div class="report-stat-grid" id="reportStats"></div>
+        <button class="btn-outline" style="margin-top:1rem;width:100%;" onclick="exportReport('summary')">⬇ Export CSV</button>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">District Completion</span></div>
+        <div class="bar-chart-wrap" id="barChart"></div>
+      </div>
+      <div class="card full-width">
+        <div class="card-head"><span class="card-title">By District</span><button class="btn-sm" onclick="exportReport('districts')">⬇ CSV</button></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>District</th><th>Target</th><th>Registered</th><th>Certified</th><th>Hectares</th><th>%</th></tr></thead>
+            <tbody id="reportDistrictBody"><tr><td colspan="6" class="empty-cell">No data.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SETTINGS ═══ -->
+  <section class="tab-section" id="tab-settings">
+    <div class="page-header"><h1 class="page-title">Settings</h1></div>
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-head"><span class="card-title">System Configuration</span></div>
+        <div class="form-body">
+          <div class="field"><label>Region / Country</label><input type="text" id="s_regionName" placeholder="e.g. Tigray, Ethiopia" /></div>
+          <div class="field"><label>Bureau / Organization</label><input type="text" id="s_orgName" placeholder="e.g. Bureau of Land Administration" /></div>
+          <div class="field"><label>Certificate Prefix</label><input type="text" id="s_certPrefix" placeholder="e.g. TG, LT, NG" maxlength="5" /></div>
+          <div class="field"><label>Area Unit</label><select id="s_areaUnit"><option value="ha">Hectares (ha)</option><option value="acres">Acres</option><option value="sqm">Square Meters</option></select></div>
+          <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Data Management</span></div>
+        <div class="form-body">
+          <div class="data-action-row"><div><div class="data-action-label">Export All Data</div><div class="data-action-sub">Download as JSON backup</div></div><button class="btn-outline" onclick="exportAllData()">⬇ Export</button></div>
+          <div class="data-action-row"><div><div class="data-action-label">Import Data</div><div class="data-action-sub">Restore from JSON</div></div><button class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ Import</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)" /></div>
+          <div class="data-action-row danger"><div><div class="data-action-label">Clear All Data</div><div class="data-action-sub">Permanently delete all</div></div><button class="btn-danger" onclick="clearAllData()">✕ Clear</button></div>
+          <div class="storage-info" id="storageInfo"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Sync Settings</span></div>
+        <div class="form-body">
+          <div class="field"><label>Server Sync URL</label><input type="url" id="s_syncUrl" placeholder="https://your-server.com/api/sync" /></div>
+          <div class="field"><label>API Key</label><input type="password" id="s_apiKey" placeholder="Leave blank for local-only" /></div>
+          <div class="toggle-row"><label class="toggle-label">Auto-sync when online</label><label class="toggle"><input type="checkbox" id="s_autoSync" checked /><span class="toggle-slider"></span></label></div>
+          <div class="pending-count" id="pendingSyncCount">Pending: 0 records</div>
+          <button class="btn-primary" onclick="forceSyncNow()">⚡ Sync Now</button>
+        </div>
+      </div>
+      <!-- PWA Install card -->
+      <div class="card" id="pwaCard">
+        <div class="card-head"><span class="card-title">Mobile App</span></div>
+        <div class="form-body">
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">ኣብ ሞባይልካ Home Screen ስቐሎ — ኢንተርኔት ብዘይብሉ ይሰርሕ።</div>
+          <button class="btn-primary" id="pwaInstallBtn" onclick="triggerInstall()">📲 Install App</button>
+          <div class="pwa-ios-hint" id="pwaIosHint" style="display:none;margin-top:10px;font-size:12px;color:var(--text-secondary);line-height:1.6;">
+            iPhone/iPad: Safari ብቐጥታ ኸፊትካ → Share ⬆ → "Add to Home Screen" ጠዋቕ
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="addDistrictModal">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Add District / Woreda</span><button class="modal-close" onclick="closeModal('addDistrictModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row two"><div class="field"><label>District Name *</label><input type="text" id="d_name" placeholder="e.g. Adigrat" /></div><div class="field"><label>Zone / Region</label><input type="text" id="d_zone" placeholder="e.g. Eastern" /></div></div>
+      <div class="form-row two"><div class="field"><label>Target Farmers *</label><input type="number" id="d_target" placeholder="5000" min="1" inputmode="numeric" /></div><div class="field"><label>Target Hectares</label><input type="number" id="d_hectaresTarget" placeholder="8000" inputmode="numeric" /></div></div>
+      <div class="form-row two"><div class="field"><label>Center Latitude</label><input type="number" id="d_lat" placeholder="14.27" step="0.001" inputmode="decimal" /></div><div class="field"><label>Center Longitude</label><input type="number" id="d_lng" placeholder="39.45" step="0.001" inputmode="decimal" /></div></div>
+      <div class="field"><label>Status</label><select id="d_status"><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option></select></div>
+    </div>
+    <div class="modal-foot"><button class="btn-outline" onclick="closeModal('addDistrictModal')">Cancel</button><button class="btn-primary" onclick="saveDistrict()">Add District</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addTransferModal">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Record Transfer</span><button class="modal-close" onclick="closeModal('addTransferModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Certificate No. *</label><input type="text" id="t_cert" placeholder="Certificate number" /></div>
+      <div class="form-row two"><div class="field"><label>From *</label><input type="text" id="t_from" placeholder="Current owner" /></div><div class="field"><label>To *</label><input type="text" id="t_to" placeholder="New owner" /></div></div>
+      <div class="form-row two"><div class="field"><label>Type *</label><select id="t_type"><option value="inheritance">Inheritance / ውርሻ</option><option value="rental">Rental / ክራይ</option><option value="gift">Gift / ስጦታ</option><option value="redistribution">Redistribution</option><option value="sale">Sale</option></select></div><div class="field"><label>Date *</label><input type="date" id="t_date" /></div></div>
+      <div class="field"><label>Notes</label><textarea id="t_notes" rows="2" placeholder="Any notes..."></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn-outline" onclick="closeModal('addTransferModal')">Cancel</button><button class="btn-primary" onclick="saveTransfer()">Record</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
